@@ -1,8 +1,20 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 from flaskr import mysql
+from flaskr.haystack_search import recommender
 
 # Create Blueprint
 bp = Blueprint('main', __name__)
+
+# Flag to track Haystack initialization
+_haystack_initialized = False
+
+
+def ensure_haystack_initialized():
+    """Initialize Haystack on first request (lazy initialization)"""
+    global _haystack_initialized
+    if not _haystack_initialized:
+        recommender.initialize(mysql)
+        _haystack_initialized = True
 
 
 @bp.route('/')
@@ -23,14 +35,59 @@ def health():
 
 @bp.route('/recommend', methods=['POST'])
 def recommend():
-    """Main recommendation endpoint - will implement with Haystack later"""
-    return {
-        'message': 'Recommendation endpoint - coming soon',
-        'status': 'not_implemented'
-    }, 501
+    """
+    Main recommendation endpoint using Haystack AI search.
+    
+    Expects JSON:
+    {
+        "query": "desired functionalities"
+    }
+    
+    Returns JSON:
+    {
+        "success": true,
+        "software": {...},
+        "score": 0.85,
+        "explanation": "..."
+    }
+    """
+    try:
+        # Initialize Haystack on first request
+        ensure_haystack_initialized()
+        
+        # Get JSON data
+        data = request.get_json()
+        
+        if not data or 'query' not in data:
+            return jsonify({
+                "success": False,
+                "message": "Missing 'query' field in request body"
+            }), 400
+        
+        query = data['query'].strip()
+        
+        if not query:
+            return jsonify({
+                "success": False,
+                "message": "Query cannot be empty"
+            }), 400
+        
+        # Get recommendation from Haystack
+        from flaskr.haystack_search import recommender
+        result = recommender.recommend(query)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "message": f"Internal server error: {str(e)}"
+        }), 500
 
-@bp.route('/software') 
+
+@bp.route('/software')
 def get_software():
+    """Get all software entries from database"""
     try:
         cursor = mysql.get_db().cursor()
         cursor.execute('SELECT id, name, description, category FROM software')
