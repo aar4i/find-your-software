@@ -13,41 +13,6 @@ class SoftwareRecommender:
         """Initialize empty recommender"""
         self.document_store = None
         self.pipeline = None
-
-    def create_sample_documents(self):
-        """
-        Create sample documents for testing (without MySQL).
-        Returns list of Haystack Documents.
-        """
-        sample_data = [
-            {
-                "name": "Notion",
-                "description": "All-in-one workspace for notes and collaboration",
-                "features": "docs, wiki, tasks, databases, real-time collaboration",
-                "category": "productivity"
-            },
-            {
-                "name": "Jira",
-                "description": "Project management and issue tracking",
-                "features": "scrum, sprints, backlog, bug tracking, workflows",
-                "category": "project_management"
-            },
-            {
-                "name": "Figma",
-                "description": "Collaborative design tool",
-                "features": "design, prototyping, real-time collaboration, components",
-                "category": "design"
-            }
-        ]
-        
-        documents = []
-        for data in sample_data:
-            content = f"{data['name']}. {data['description']}. Features: {data['features']}"
-            doc = Document(content=content, meta=data)
-            documents.append(doc)
-        
-        logger.info(f"Created {len(documents)} sample documents")
-        return documents
     
     def load_from_mysql(self, mysql_connection):
         """
@@ -95,37 +60,6 @@ class SoftwareRecommender:
         except Exception as e:
             logger.error(f"❌ Error loading from MySQL: {e}")
             raise
-    
-    def initialize_test_pipeline(self):
-        """
-        Initialize Haystack pipeline with test data (no MySQL needed).
-        For testing purposes only.
-        """
-        try:
-            logger.info("Initializing test pipeline...")
-            
-            # 1. Create DocumentStore
-            self.document_store = InMemoryDocumentStore()
-            
-            # 2. Load sample documents
-            docs = self.create_sample_documents()
-            
-            # 3. Create document embedder
-            doc_embedder = SentenceTransformersDocumentEmbedder(
-                model="sentence-transformers/all-MiniLM-L6-v2"
-            )
-            doc_embedder.warm_up()
-            
-            # 4. Generate embeddings
-            docs_with_embeddings = doc_embedder.run(docs)
-            self.document_store.write_documents(docs_with_embeddings["documents"])
-            
-            logger.info("✅ Test pipeline initialized!")
-            return True
-            
-        except Exception as e:
-            logger.error(f"❌ Error: {e}")
-            return False
         
     def initialize(self, mysql_connection):
         """
