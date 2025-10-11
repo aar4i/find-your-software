@@ -5,7 +5,6 @@ from flaskext.mysql import MySQL
 # Create MySQL object (will be initialized later)
 mysql = MySQL()
 
-
 def create_app(test_config=None):
     """Application Factory for Flask application"""
     

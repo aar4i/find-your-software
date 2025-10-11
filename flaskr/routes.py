@@ -1,31 +1,23 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from flaskr import mysql
 from flaskr.haystack_search import recommender
 
-# Create Blueprint
 bp = Blueprint('main', __name__)
 
 # Flag to track Haystack initialization
 _haystack_initialized = False
 
-
 def ensure_haystack_initialized():
-    """Initialize Haystack on first request (lazy initialization)"""
+    """Initialize Haystack on first request (for lazy initialization)"""
     global _haystack_initialized
     if not _haystack_initialized:
         recommender.initialize(mysql)
         _haystack_initialized = True
 
-
 @bp.route('/')
 def index():
-    """Main endpoint - API info"""
-    return {
-        'message': 'Find Your Software API',
-        'status': 'running',
-        'version': '1.0'
-    }
-
+    """Main page"""
+    return render_template('index.html')
 
 @bp.route('/health')
 def health():
@@ -37,19 +29,7 @@ def health():
 def recommend():
     """
     Main recommendation endpoint using Haystack AI search.
-    
-    Expects JSON:
-    {
-        "query": "desired functionalities"
-    }
-    
-    Returns JSON:
-    {
-        "success": true,
-        "software": {...},
-        "score": 0.85,
-        "explanation": "..."
-    }
+    Expects JSON body with 'query' field.
     """
     try:
         # Initialize Haystack on first request

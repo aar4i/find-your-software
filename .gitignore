@@ -23,3 +23,24 @@ __pycache__/
 # Database
 *.db
 *.sqlite
+
+# Node.js
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Tailwind
+flaskr/static/style.css

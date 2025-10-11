@@ -7,7 +7,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-
 class SoftwareRecommender:
     def __init__(self):
         """Initialize empty recommender"""
@@ -15,15 +14,7 @@ class SoftwareRecommender:
         self.pipeline = None
     
     def load_from_mysql(self, mysql_connection):
-        """
-        Load all software from MySQL database.
-        
-        Args:
-            mysql_connection: Flask-MySQL connection
-            
-        Returns:
-            list of Haystack Documents
-        """
+        """Load all software data from MySQL database."""
         try:
             cursor = mysql_connection.get_db().cursor()
             cursor.execute('SELECT id, name, features, description, category FROM software')
@@ -64,10 +55,7 @@ class SoftwareRecommender:
     def initialize(self, mysql_connection):
         """
         Initialize Haystack with real data from MySQL.
-        This will be called by Flask app.
-        
-        Args:
-            mysql_connection: Flask-MySQL connection
+        It will be called by Flask app.
         """
         try:
             logger.info("Initializing Haystack with MySQL data...")
@@ -137,12 +125,6 @@ class SoftwareRecommender:
     def recommend(self, query: str):
         """
         Get software recommendation based on query.
-        
-        Args:
-            query: User's description of needed functionality
-            
-        Returns:
-            dict with recommendation
         """
         try:
             if not self.pipeline:
@@ -188,5 +170,4 @@ class SoftwareRecommender:
             }
         
 # Global instance for Flask app
-recommender = SoftwareRecommender() 
-        
+recommender = SoftwareRecommender()
