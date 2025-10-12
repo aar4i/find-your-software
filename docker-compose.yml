@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: find_your_software_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: find_your_software
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: .
+    container_name: find_your_software_backend
+    depends_on:
+      - db
+    ports:
+      - "5050:5000"
+    environment:
+      FLASK_APP: flaskr
+      FLASK_RUN_HOST: 0.0.0.0
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_PORT: 3306
+      MYSQL_DATABASE_USER: root
+      MYSQL_DATABASE_PASSWORD: mysecretpassword
+      MYSQL_DATABASE_DB: find_your_software
+      MYSQL_DATABASE_CHARSET: utf8mb4
+    command: flask run --host=0.0.0.0
+
+volumes:
+  mysql_data:
