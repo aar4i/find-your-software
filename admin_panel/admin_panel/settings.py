@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'find_your_software',
         'USER': 'root',
-        'PASSWORD': '', # We don't use password for local development
+        'PASSWORD': '', # I don't use password for local development
         'HOST': 'localhost',
         'PORT': '3306',
     }
