@@ -42,30 +42,51 @@ form.addEventListener('submit', async (e) => {
 });
 
 function showResult(data) {
-    const s = data.software;
-    const matchPercent = Math.round(data.score * 100);
+    let html = '<div class="mb-6"><h3 class="text-2xl font-bold text-gray-900">Top 3 Matches</h3></div>';
     
-    resultDiv.innerHTML = `
-        <div class="flex items-start justify-between mb-4">
-            <div>
-                <h3 class="text-2xl font-bold text-gray-900">${s.name}</h3>
-                <span class="inline-block mt-1 px-3 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full">
-                    ${s.category}
-                </span>
+    data.recommendations.forEach((software, index) => {
+        const matchPercent = Math.round(software.score * 100);
+        const isFirst = index === 0;
+        
+        html += `
+            <div class="mb-4 p-5 rounded-xl border ${isFirst ? 'border-green-300 bg-green-50 shadow-md' : 'border-gray-200 bg-white shadow-sm'}">
+                
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-3">
+                        ${isFirst ? `
+                            <span class="flex items-center justify-center w-7 h-7 rounded-full bg-green-500 text-white text-sm font-bold">
+                                1
+                            </span>
+                        ` : ''}
+                        <h4 class="text-xl font-bold text-gray-900">${software.name}</h4>
+                    </div>
+                    <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                        ${matchPercent}% match
+                    </span>
+                </div>
+                
+                <!-- Category Badge -->
+                <div class="mb-2 ${isFirst ? 'ml-10' : ''}">
+                    <span class="inline-block px-2.5 py-0.5 text-xs font-medium text-gray-600 bg-gray-200 rounded-full">
+                        ${software.category}
+                    </span>
+                </div>
+                
+                <!-- Description -->
+                <p class="text-gray-700 text-base mb-3 ${isFirst ? 'ml-10' : ''} leading-relaxed">${software.description}</p>
+                
+                <!-- Features -->
+                <div class="border-t border-gray-300 pt-3 ${isFirst ? 'ml-10' : ''}">
+                    <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Key Features</h5>
+                    <p class="text-sm text-gray-600 leading-relaxed">${software.features}</p>
+                </div>
+                
             </div>
-            <span class="px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
-                ${matchPercent}% match
-            </span>
-        </div>
-        
-        <p class="text-gray-700 mb-4">${s.description}</p>
-        
-        <div class="border-t border-gray-200 pt-4">
-            <h4 class="text-sm font-semibold text-gray-900 mb-2">Key Features:</h4>
-            <p class="text-sm text-gray-600 leading-relaxed">${s.features}</p>
-        </div>
-    `;
+        `;
+    });
     
+    resultDiv.innerHTML = html;
     resultDiv.classList.remove('hidden');
 }
 

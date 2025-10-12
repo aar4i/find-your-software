@@ -45,7 +45,6 @@ class SoftwareRecommender:
                 )
                 documents.append(doc)
             
-            logger.info(f"✅ Loaded {len(documents)} documents from MySQL")
             return documents
             
         except Exception as e:
@@ -105,7 +104,7 @@ class SoftwareRecommender:
             # Retriever to find similar documents
             retriever = InMemoryEmbeddingRetriever(
                 document_store=self.document_store,
-                top_k=1
+                top_k=3
             )
             
             # Add components
@@ -136,7 +135,7 @@ class SoftwareRecommender:
             # Run search
             result = self.pipeline.run({
                 "text_embedder": {"text": query},
-                "retriever": {"top_k": 1}
+                "retriever": {"top_k": 3}
             })
             
             documents = result["retriever"]["documents"]
@@ -147,19 +146,21 @@ class SoftwareRecommender:
                     "message": "No matching software found"
                 }
             
-            # Get best match
-            best = documents[0]
-            
+            # Get top 3 matches
+            results = []
+            for doc in documents[:3]: 
+                results.append({
+                    "name": doc.meta["name"],
+                    "description": doc.meta["description"],
+                    "features": doc.meta["features"],
+                    "category": doc.meta["category"],
+                    "score": round(doc.score, 3)
+                })
+
             return {
                 "success": True,
-                "software": {
-                    "name": best.meta["name"],
-                    "description": best.meta["description"],
-                    "features": best.meta["features"],
-                    "category": best.meta["category"]
-                },
-                "score": round(best.score, 3),
-                "explanation": f"Best match (similarity: {round(best.score, 3)})"
+                "recommendations": results,  
+                "count": len(results)
             }
             
         except Exception as e:
