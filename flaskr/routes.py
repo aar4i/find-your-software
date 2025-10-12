@@ -24,7 +24,6 @@ def health():
     """Health check endpoint for monitoring"""
     return {'status': 'ok'}
 
-
 @bp.route('/recommend', methods=['POST'])
 def recommend():
     """

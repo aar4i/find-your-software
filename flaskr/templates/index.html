@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Your Software</title>
+    <meta name="description" content="AI-powered software recommendation tool">
+    <meta name="author" content="Your Name">
+    <title>Find Your Software - AI Recommendations</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body class="bg-gray-50 min-h-screen">
     
-    <!-- Navigation -->
     <nav class="bg-white border-b border-gray-200">
         <div class="max-w-4xl mx-auto px-4 py-4">
             <h1 class="text-xl font-semibold text-gray-900">Find Your Software</h1>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="max-w-2xl mx-auto px-4 py-16">
         
-        <!-- Search Form -->
+        <!-- Search Card -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">
                 What software do you need?
@@ -57,7 +58,7 @@
 
         <!-- Results Card -->
         <div id="result" class="hidden mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-            <!-- Result will be inserted here by JavaScript -->
+            <!-- Result will be inserted here by JS file ( app.js ) -->
         </div>
 
     </main>
