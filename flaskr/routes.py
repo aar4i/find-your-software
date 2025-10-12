@@ -26,10 +26,8 @@ def health():
 
 @bp.route('/recommend', methods=['POST'])
 def recommend():
-    """
-    Main recommendation endpoint using Haystack AI search.
-    Expects JSON body with 'query' field.
-    """
+    """Main recommendation endpoint using Haystack AI search"""
+    
     try:
         # Initialize Haystack on first request
         ensure_haystack_initialized()
