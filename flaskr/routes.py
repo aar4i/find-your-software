@@ -83,3 +83,4 @@ def get_software():
         return {'count': len(result), 'software': result}
     except Exception as e:
         return {'error': str(e)}, 500
+    

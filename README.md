@@ -86,7 +86,7 @@ npx tailwindcss -i ./flaskr/static/input.css -o ./flaskr/static/style.css
 flask --app flaskr run --debug
 ```
 
-Visit: http://127.0.0.1:5000
+Visit: http://127.0.0.1:5050
 
 ### Django Admin Panel (Port 8000)
 
