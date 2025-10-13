@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: mysql:8.0
@@ -13,12 +11,20 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysecretpassword"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: find_your_software_backend
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "5050:5000"
     environment:
@@ -31,6 +37,24 @@ services:
       MYSQL_DATABASE_DB: find_your_software
       MYSQL_DATABASE_CHARSET: utf8mb4
     command: flask run --host=0.0.0.0
+
+  admin:
+    build:
+      context: ./admin_panel
+      dockerfile: Dockerfile
+    container_name: find_your_software_admin
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      MYSQL_DATABASE_HOST: db
+      MYSQL_DATABASE_PORT: 3306
+      MYSQL_DATABASE_USER: root
+      MYSQL_DATABASE_PASSWORD: mysecretpassword
+      MYSQL_DATABASE_DB: find_your_software
+    command: python manage.py runserver 0.0.0.0:8000
 
 volumes:
   mysql_data:

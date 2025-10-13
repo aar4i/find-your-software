@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,11 +76,14 @@ WSGI_APPLICATION = 'admin_panel.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'find_your_software',
-        'USER': 'root',
-        'PASSWORD': '', # I don't use password for local development
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('MYSQL_DATABASE_DB', 'find_your_software'),
+        'USER': os.getenv('MYSQL_DATABASE_USER', 'root'),
+        'PASSWORD': os.getenv('MYSQL_DATABASE_PASSWORD', 'mysecretpassword'),
+        'HOST': os.getenv('MYSQL_DATABASE_HOST', 'db'),  # db inside docker-compose network
+        'PORT': os.getenv('MYSQL_DATABASE_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        }
     }
 }
 
