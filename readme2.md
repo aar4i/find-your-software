@@ -34,56 +34,44 @@ The application includes 15 pre-configured software entries:
 - Django admin panel for managing software database  
 - Responsive web interface  
 
-## Installation
-
-### Prerequisites
-
-- Docker 20.10+  
-- Docker Compose 2.0+  
-
 ### Setup Steps
+**Make sure Docker Desktop is running before starting!**    
 
 1. **Clone the repository and navigate to the project directory:**
    ```bash
    git clone https://github.com/yourusername/find_your_software.git
-   cd find_your_software
-
-2. **Build and start all services with Docker Compose:**
+    ```
     ```bash
+   cd find_your_software
+  
+   docker-compose up -d
+    ```
+2.   **Run migrations:**
+   ```bash
+   docker exec -it find_your_software_admin python manage.py migrate
+   ```
+   **Add columns to the table:**
+   ```bash
+   docker exec -it find_your_software_db mysql -u root -pmysecretpassword
+    ```
+   **In MySQL console:**
 
-    docker-compose up --build
+        USE find_your_software;
 
-    This will:
+        ALTER TABLE software 
+        ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
-    Build and run the Flask API
-    Launch the Django admin panel
-    Initialize the MySQL database
-    Connect all containers in a shared Docker network
+        EXIT;
 
-3. **Access the services:**
+    **Create a superuser:**
+    ```bash
+    docker exec -it find_your_software_admin python manage.py createsuperuser
+    ```
 
-    Flask app → http://localhost:5050
+    **Open in your browser:**
 
-    Django admin → http://localhost:8000/admin
-
-4. **Stop the containers:**
-
-    docker-compose down
-
-5. **(Optional) Rebuild everything from scratch:**
-
-    docker-compose up --build --force-recreate
+        Django Admin: http://127.0.0.1:8000/admin/
+        Flask API: http://127.0.0.1:5050/
 
 
-
-Login with the superuser credentials you created during setup.
-
-### Creating Django Superuser
-
-```bash
-cd admin_panel
-python manage.py createsuperuser
-```
-
-login: admin,
-password: admin123
