@@ -46,16 +46,21 @@ The application includes 15 pre-configured software entries:
   
    docker-compose up -d
     ```
-2.   **Run migrations:**
-   ```bash
+2. **Run migrations:**
+
+```bash
    docker exec -it find_your_software_admin python manage.py migrate
    ```
-   **Add columns to the table:**
+
+3. **Add columns to the table:**
+
    ```bash
    docker exec -it find_your_software_db mysql -u root -pmysecretpassword
     ```
-   **In MySQL console:**
 
+4. **In MySQL console:**
+
+    ```bash
         USE find_your_software;
 
         ALTER TABLE software 
@@ -63,13 +68,14 @@ The application includes 15 pre-configured software entries:
         ADD COLUMN updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
         EXIT;
+    ```
 
-    **Create a superuser:**
+5. **Create a superuser:**
     ```bash
     docker exec -it find_your_software_admin python manage.py createsuperuser
     ```
 
-    **Open in your browser:**
+6. **Open in your browser:**
 
         Django Admin: http://127.0.0.1:8000/admin/
         Flask API: http://127.0.0.1:5050/
